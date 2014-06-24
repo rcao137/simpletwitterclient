@@ -66,7 +66,20 @@ public class TimelineActivity extends Activity {
 			}
 		});
 	}
+	
+	// Append more data into the adapter
+	public void customLoadMoreDataFromApi(int offset) {
+		// This method probably sends out a network request and appends new data items to your adapter. 
+		// Use the offset value and add it as a parameter to your API request to retrieve paginated data.
+		// Deserialize API response and then construct new objects to append to the adapter
 
+		//		Log.d("debug", Integer.toString(offset));
+		max_id = (String) tweets.get(offset-1).getUid();
+		Long opt_max_id = Long.valueOf(max_id) -1;
+		max_id = opt_max_id.toString();
+		populateTimeline();
+	}
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.tweet, menu);
@@ -90,19 +103,6 @@ public class TimelineActivity extends Activity {
 			postNewTweet();
 		}
 	} 
-
-	// Append more data into the adapter
-	public void customLoadMoreDataFromApi(int offset) {
-		// This method probably sends out a network request and appends new data items to your adapter. 
-		// Use the offset value and add it as a parameter to your API request to retrieve paginated data.
-		// Deserialize API response and then construct new objects to append to the adapter
-
-		//		Log.d("debug", Integer.toString(offset));
-		max_id = (String) tweets.get(offset-1).getUid();
-		Long opt_max_id = Long.valueOf(max_id) -1;
-		max_id = opt_max_id.toString();
-		populateTimeline();
-	}
 
 	public void populateTimeline(){
 		client.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
@@ -139,12 +139,9 @@ public class TimelineActivity extends Activity {
 	}
 
 	public void postNewTweet() {
-		max_id = "0";
-		populateTimeline();	
 		client.postNewTweet(newTweet.getBody(), new JsonHttpResponseHandler() {
 			public void onSuccess(JSONObject json){
-				aTweets.insert(newTweet, 0);	
-//				aTweets.notifyDataSetChanged();
+				aTweets.insert(Tweet.fromJSON(json), 0);	
 				lvTweets.setSelection(0);				
 			}
 
@@ -154,6 +151,5 @@ public class TimelineActivity extends Activity {
 			}
 		});
 	}
-
 
 }
