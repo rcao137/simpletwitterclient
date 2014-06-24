@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${packageName}.${activityClass}" >
+    
+    <Button
+        android:id="@+id/btnCancel"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:onClick="onCancelAction"
+        android:text="@string/cancel_button" />
+
+    <Button
+        android:id="@+id/btnTweet"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:onClick="onCreateAction"
+        android:text="@string/tweet_button" />
+    
+    <ImageView
+        android:id="@+id/ivUserProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btnTweet"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/tvScreenName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnTweet"
+        android:layout_toRightOf="@+id/ivUserProfile"
+        android:text="@string/foo_label" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvScreenName"
+        android:layout_below="@+id/tvScreenName"
+        android:text="@string/name_label" />
+
+    <EditText
+        android:id="@+id/etTweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/ivUserProfile"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+
+
+</RelativeLayout>
