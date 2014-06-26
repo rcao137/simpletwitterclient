@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -26,13 +27,15 @@ public class TimelineActivity extends Activity {
 	private TwitterClient client;
 	private ArrayList<Tweet> tweets;
 	private ArrayAdapter<Tweet> aTweets;
+//	private PullToRefreshListView lvTweets;
+	
 	private ListView lvTweets;
-
 	private Tweet newTweet;
 	private String profileImage;
 	private String screenName;
 	private String name;
 	private String max_id;
+	private Typeface font;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +47,13 @@ public class TimelineActivity extends Activity {
 		client = TwitterApp.getRestClient();
 		// Get initial tweets
 		max_id = "0";
-		populateTimeline();
+		populateTimeline(false);
 		getUserInformation();
 
 	}
 
 	protected void setupViews(){
+//    lvTweets = (PullToRefreshListView) findViewById(R.id.lvTweets);
 		lvTweets = (ListView) findViewById(R.id.lvTweets);
 		tweets = new ArrayList<Tweet>();
 		aTweets = new TweetArrayAdapter(this, tweets);
@@ -65,8 +69,24 @@ public class TimelineActivity extends Activity {
 				customLoadMoreDataFromApi(totalItemsCount); 
 			}
 		});
+
+/*		lvTweets.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				// Your code to refresh the list contents
+				// Make sure you call listView.onRefreshComplete()
+				// once the loading is done. This can be done from here or any
+				// place such as when the network request has completed successfully.
+				max_id = "0";
+				boolean refresh = true;
+				populateTimeline(refresh);
+		
+			}
+		});
+		*/
 	}
-	
+
+		
 	// Append more data into the adapter
 	public void customLoadMoreDataFromApi(int offset) {
 		// This method probably sends out a network request and appends new data items to your adapter. 
@@ -77,8 +97,9 @@ public class TimelineActivity extends Activity {
 		max_id = (String) tweets.get(offset-1).getUid();
 		Long opt_max_id = Long.valueOf(max_id) -1;
 		max_id = opt_max_id.toString();
-		populateTimeline();
+		populateTimeline(false);
 	}
+
 	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -104,12 +125,14 @@ public class TimelineActivity extends Activity {
 		}
 	} 
 
-	public void populateTimeline(){
+	public void populateTimeline(final boolean refreshFlag){
 		client.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
 			public void onSuccess(JSONArray json){
 				if (max_id.equals("0"))
 					aTweets.clear();
 				aTweets.addAll(Tweet.fromJSONArray(json)); 	
+//				if (refreshFlag)
+//				  lvTweets.onRefreshComplete();
 			}
 
 			public void onFailure(Throwable e, String s){
@@ -118,7 +141,7 @@ public class TimelineActivity extends Activity {
 			}
 		});
 	}
-
+	
 	public void getUserInformation() {
 		client.getUserInfo(new JsonHttpResponseHandler() {
 			public void onSuccess(JSONObject json){

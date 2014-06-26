@@ -2,23 +2,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+        android:paddingTop="5dp"
+    android:paddingBottom= "5dp" 
+    android:paddingLeft= "5dp"
+    android:paddingRight= "5dp"
     tools:context="${packageName}.${activityClass}" >
     
     <Button
         android:id="@+id/btnCancel"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:onClick="onCancelAction"
-        android:text="@string/cancel_button" />
+        android:text="@string/cancel_button"
+        android:layout_width="70dp"
+        android:layout_height="35dp" />
 
     <Button
         android:id="@+id/btnTweet"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="35dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:onClick="onCreateAction"
@@ -30,36 +34,52 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/btnTweet"
+        android:layout_marginTop="10dp"
         android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/tvCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@+id/btnTweet"
+        android:text="@string/count_label" 
+        android:textSize="13sp"
+        android:textColor="#A9A9A9" />
 
     <TextView
         android:id="@+id/tvScreenName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnTweet"
+        android:layout_alignBottom="@+id/ivUserProfile"
         android:layout_toRightOf="@+id/ivUserProfile"
-        android:text="@string/foo_label" />
+        android:text="@string/foo_label" 
+        android:textSize="13sp"
+        android:textColor="#A9A9A9" />
 
     <TextView
         android:id="@+id/tvUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tvScreenName"
-        android:layout_below="@+id/tvScreenName"
-        android:text="@string/name_label" />
+        android:layout_alignTop="@+id/ivUserProfile"
+        android:text="@string/name_label"     
+        android:textSize="13sp" 
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/etTweet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/ivUserProfile"
-        android:ems="10" >
+        android:textSize="13sp"
+        android:ems="10"
+        android:hint="What is happening?" >
 
         <requestFocus />
     </EditText>
-
-
 
 </RelativeLayout>

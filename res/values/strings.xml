@@ -14,5 +14,7 @@
     <string name="name_label">name</string>
     <string name="tweet_button">Tweet</string>
     <string name="cancel_button">Cancel</string>
+    <string name="count_label">140</string>
+    <string name="shortname_label">bar</string>
 
 </resources>

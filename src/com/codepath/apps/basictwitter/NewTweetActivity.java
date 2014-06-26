@@ -3,6 +3,8 @@ package com.codepath.apps.basictwitter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,6 +17,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class NewTweetActivity extends Activity {
 	private Tweet newTweet;
 	private User user;
+	TextView tvCount;
+	EditText edTweet;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +38,28 @@ public class NewTweetActivity extends Activity {
 		TextView tvScreenName = (TextView) findViewById(R.id.tvScreenName);
 		tvScreenName.setText(user.getScreenName());
 		TextView tvName = (TextView) findViewById(R.id.tvUserName);
-		tvName.setText(user.getName());		
+		tvName.setText(user.getName());	
+		
+	  edTweet = (EditText) findViewById(R.id.etTweet);
+		tvCount = (TextView) findViewById(R.id.tvCount);
+		
+		edTweet.addTextChangedListener(new TextWatcher(){
+        public void afterTextChanged(Editable s) {
+            int len = s.length();
+            int lenleft = 140 - len;
+            tvCount.setText(String.valueOf(lenleft));
+            if (lenleft<=0)
+            	tvCount.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+            else
+            	tvCount.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+        public void onTextChanged(CharSequence s, int start, int before, int count){}
+    }); 
 	}
 
 	public void onCreateAction(View v) {
-    EditText edTweet = (EditText) findViewById(R.id.etTweet);
+    
     newTweet.setBody(edTweet.getText().toString());
     
     Intent data = new Intent();
@@ -52,4 +73,5 @@ public class NewTweetActivity extends Activity {
 	public void onCancelAction(View v) {
 		finish();
 	}
+	
 }
