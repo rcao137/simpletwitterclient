@@ -14,12 +14,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.codepath.apps.basictwitter.models.Tweet;
 import com.codepath.apps.basictwitter.models.User;
 import com.codepath.apps.basictwitter.util.EndlessScrollListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
+
+import eu.erikw.PullToRefreshListView;
+import eu.erikw.PullToRefreshListView.OnRefreshListener;
 
 public class TimelineActivity extends Activity {
 	private final int REQUEST_CODE = 20;
@@ -27,14 +29,11 @@ public class TimelineActivity extends Activity {
 	private TwitterClient client;
 	private ArrayList<Tweet> tweets;
 	private ArrayAdapter<Tweet> aTweets;
-//	private PullToRefreshListView lvTweets;
-	
-	private ListView lvTweets;
+	private PullToRefreshListView lvTweets;
 	private Tweet newTweet;
 	private String profileImage;
 	private String screenName;
 	private String name;
-	private String max_id;
 	private Typeface font;
 
 	@Override
@@ -46,15 +45,16 @@ public class TimelineActivity extends Activity {
 		attachListener();
 		client = TwitterApp.getRestClient();
 		// Get initial tweets
-		max_id = "0";
-		populateTimeline(false);
+		populateTimeline("0", false);
+		// Get user information
 		getUserInformation();
+
 
 	}
 
 	protected void setupViews(){
-//    lvTweets = (PullToRefreshListView) findViewById(R.id.lvTweets);
-		lvTweets = (ListView) findViewById(R.id.lvTweets);
+		lvTweets = (PullToRefreshListView) findViewById(R.id.lvTweets);
+		//		lvTweets = (ListView) findViewById(R.id.lvTweets);
 		tweets = new ArrayList<Tweet>();
 		aTweets = new TweetArrayAdapter(this, tweets);
 		lvTweets.setAdapter(aTweets);
@@ -70,37 +70,40 @@ public class TimelineActivity extends Activity {
 			}
 		});
 
-/*		lvTweets.setOnRefreshListener(new OnRefreshListener() {
+		lvTweets.setOnRefreshListener(new OnRefreshListener() { 
 			@Override
 			public void onRefresh() {
 				// Your code to refresh the list contents
 				// Make sure you call listView.onRefreshComplete()
 				// once the loading is done. This can be done from here or any
 				// place such as when the network request has completed successfully.
-				max_id = "0";
 				boolean refresh = true;
-				populateTimeline(refresh);
-		
+				populateTimeline("0", refresh);
+
 			}
 		});
-		*/
+
 	}
 
-		
+
 	// Append more data into the adapter
 	public void customLoadMoreDataFromApi(int offset) {
+		String max_id;
 		// This method probably sends out a network request and appends new data items to your adapter. 
 		// Use the offset value and add it as a parameter to your API request to retrieve paginated data.
 		// Deserialize API response and then construct new objects to append to the adapter
 
-		//		Log.d("debug", Integer.toString(offset));
-		max_id = (String) tweets.get(offset-1).getUid();
-		Long opt_max_id = Long.valueOf(max_id) -1;
-		max_id = opt_max_id.toString();
-		populateTimeline(false);
+		int tweetLen = tweets.size();
+		if (tweetLen > 0) {
+//			max_id = (String) tweets.get(offset-2).getUid();
+			max_id = (String) tweets.get(tweetLen-1).getUid();
+			Long opt_max_id = Long.valueOf(max_id) -1;
+			max_id = opt_max_id.toString();
+			populateTimeline(max_id, false);
+		}
 	}
 
-	
+
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.tweet, menu);
@@ -125,14 +128,14 @@ public class TimelineActivity extends Activity {
 		}
 	} 
 
-	public void populateTimeline(final boolean refreshFlag){
+	public void populateTimeline(final String max_id, final boolean refreshFlag){
 		client.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
 			public void onSuccess(JSONArray json){
 				if (max_id.equals("0"))
 					aTweets.clear();
 				aTweets.addAll(Tweet.fromJSONArray(json)); 	
-//				if (refreshFlag)
-//				  lvTweets.onRefreshComplete();
+				if (refreshFlag)
+					lvTweets.onRefreshComplete();
 			}
 
 			public void onFailure(Throwable e, String s){
@@ -141,7 +144,7 @@ public class TimelineActivity extends Activity {
 			}
 		});
 	}
-	
+
 	public void getUserInformation() {
 		client.getUserInfo(new JsonHttpResponseHandler() {
 			public void onSuccess(JSONObject json){

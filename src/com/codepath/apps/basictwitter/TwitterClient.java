@@ -27,7 +27,7 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String REST_CONSUMER_KEY = "qvKWYXIWIE7lsKpGTU1QxHxOb";       // Change this
 	public static final String REST_CONSUMER_SECRET = "ChscEnzCIOFMd9LwXf13oGtWLno6erOQjVl7cHr22unSz0wiYW"; // Change this
 	public static final String REST_CALLBACK_URL = "oauth://codepathtwit"; // Change this (here and in manifest)
-	public static final String COUNT = "20";
+	public static final String COUNT = "5";
 
 	public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
