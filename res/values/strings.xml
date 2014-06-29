@@ -6,7 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_photos">Flickr Photos</string>
     <string name="login_label">Connect to Twitter</string>
-    <string name="title_activity_timeline">Home</string>
+    <string name="title_activity_timeline">Rebecca\'s Tweets</string>
     <string name="foo_label">\@foo</string>
     <string name="body_label">Body Text</string>
     <string name="relativedate_label">Date</string>
@@ -16,5 +16,6 @@
     <string name="cancel_button">Cancel</string>
     <string name="count_label">140</string>
     <string name="shortname_label">bar</string>
+    <string name="title_activity_profile">ProfileActivity</string>
 
 </resources>

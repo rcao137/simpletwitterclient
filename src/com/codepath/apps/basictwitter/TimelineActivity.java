@@ -1,109 +1,75 @@
 package com.codepath.apps.basictwitter;
 
-import java.util.ArrayList;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 
+import com.codepath.apps.basictwitter.fragments.HomeTimelineFragment;
+import com.codepath.apps.basictwitter.fragments.MentionsTimelineFragment;
+import com.codepath.apps.basictwitter.listeners.FragmentTabListener;
 import com.codepath.apps.basictwitter.models.Tweet;
 import com.codepath.apps.basictwitter.models.User;
-import com.codepath.apps.basictwitter.util.EndlessScrollListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import eu.erikw.PullToRefreshListView;
-import eu.erikw.PullToRefreshListView.OnRefreshListener;
-
-public class TimelineActivity extends Activity {
+public class TimelineActivity extends FragmentActivity {
 	private final int REQUEST_CODE = 20;
 
 	private TwitterClient client;
-	private ArrayList<Tweet> tweets;
-	private ArrayAdapter<Tweet> aTweets;
-	private PullToRefreshListView lvTweets;
+//	HomeTimelineFragment fragmentTimeline;
 	private Tweet newTweet;
-	private String profileImage;
-	private String screenName;
-	private String name;
-	private Typeface font;
+	private User profileUser;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_timeline);
 
-		setupViews();
-		attachListener();
+//		fragmentTimeline = (HomeTimelineFragment) 
+//        getSupportFragmentManager().findFragmentById(R.id.homeTimelinefragment);
+		// get client
 		client = TwitterApp.getRestClient();
-		// Get initial tweets
-		populateTimeline("0", false);
 		// Get user information
 		getUserInformation();
-
-
+		setupTabs();
 	}
 
-	protected void setupViews(){
-		lvTweets = (PullToRefreshListView) findViewById(R.id.lvTweets);
-		//		lvTweets = (ListView) findViewById(R.id.lvTweets);
-		tweets = new ArrayList<Tweet>();
-		aTweets = new TweetArrayAdapter(this, tweets);
-		lvTweets.setAdapter(aTweets);
+	private void setupTabs() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		actionBar.setDisplayShowTitleEnabled(true);
+
+		Tab tab1 = actionBar
+			.newTab()
+			.setText("Home")
+			.setIcon(R.drawable.ic_home)
+			.setTag("HomeTimelineFragment")
+			.setTabListener(
+				new FragmentTabListener<HomeTimelineFragment>(R.id.flLayout, this, "Home",
+								HomeTimelineFragment.class));
+
+		actionBar.addTab(tab1);
+		actionBar.selectTab(tab1);
+
+		Tab tab2 = actionBar
+			.newTab()
+			.setText("Mentions")
+			.setIcon(R.drawable.ic_mentions)
+			.setTag("MentionsTimelineFragment")
+			.setTabListener(
+			    new FragmentTabListener<MentionsTimelineFragment>(R.id.flLayout, this, "second",
+								MentionsTimelineFragment.class));
+
+		actionBar.addTab(tab2);
 	}
-
-	protected void attachListener() {
-		// Attach the listener to the AdapterView onCreate
-		lvTweets.setOnScrollListener(new EndlessScrollListener() {
-			@Override
-			public void onLoadMore(int page, int totalItemsCount) {
-				// Triggered only when new data needs to be appended to the list
-				customLoadMoreDataFromApi(totalItemsCount); 
-			}
-		});
-
-		lvTweets.setOnRefreshListener(new OnRefreshListener() { 
-			@Override
-			public void onRefresh() {
-				// Your code to refresh the list contents
-				// Make sure you call listView.onRefreshComplete()
-				// once the loading is done. This can be done from here or any
-				// place such as when the network request has completed successfully.
-				boolean refresh = true;
-				populateTimeline("0", refresh);
-
-			}
-		});
-
-	}
-
-
-	// Append more data into the adapter
-	public void customLoadMoreDataFromApi(int offset) {
-		String max_id;
-		// This method probably sends out a network request and appends new data items to your adapter. 
-		// Use the offset value and add it as a parameter to your API request to retrieve paginated data.
-		// Deserialize API response and then construct new objects to append to the adapter
-
-		int tweetLen = tweets.size();
-		if (tweetLen > 0) {
-//			max_id = (String) tweets.get(offset-2).getUid();
-			max_id = (String) tweets.get(tweetLen-1).getUid();
-			Long opt_max_id = Long.valueOf(max_id) -1;
-			max_id = opt_max_id.toString();
-			populateTimeline(max_id, false);
-		}
-	}
-
-
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.tweet, menu);
@@ -111,13 +77,17 @@ public class TimelineActivity extends Activity {
 	}
 
 	public void onTweetAction(MenuItem mi) {
-		User u = new User(name, screenName, profileImage);
-
 		Intent i = new Intent(this, NewTweetActivity.class);
-		i.putExtra("user", u);
+		i.putExtra("user", profileUser);
 		startActivityForResult(i, REQUEST_CODE);
 	}
 
+	public void onProfileAction(MenuItem mi) {
+		Intent i = new Intent(this, ProfileActivity.class);
+		i.putExtra("user", profileUser);
+		startActivityForResult(i, REQUEST_CODE);
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// REQUEST_CODE is defined above
@@ -128,14 +98,11 @@ public class TimelineActivity extends Activity {
 		}
 	} 
 
-	public void populateTimeline(final String max_id, final boolean refreshFlag){
-		client.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
-			public void onSuccess(JSONArray json){
-				if (max_id.equals("0"))
-					aTweets.clear();
-				aTweets.addAll(Tweet.fromJSONArray(json)); 	
-				if (refreshFlag)
-					lvTweets.onRefreshComplete();
+	public void postNewTweet() {
+		client.postNewTweet(newTweet.getBody(), new JsonHttpResponseHandler() {
+			public void onSuccess(JSONObject json){
+				Tweet t = Tweet.fromJSON(json);
+//				fragmentTimeline.insertTweettoTop(t);		
 			}
 
 			public void onFailure(Throwable e, String s){
@@ -148,27 +115,7 @@ public class TimelineActivity extends Activity {
 	public void getUserInformation() {
 		client.getUserInfo(new JsonHttpResponseHandler() {
 			public void onSuccess(JSONObject json){
-				try {
-					profileImage = json.getString("profile_image_url");
-					screenName = json.getString("screen_name");
-					name = json.getString("name");
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-
-			public void onFailure(Throwable e, String s){
-				Log.d("debug", e.toString());
-				Log.d("debug", s.toString());
-			}
-		});
-	}
-
-	public void postNewTweet() {
-		client.postNewTweet(newTweet.getBody(), new JsonHttpResponseHandler() {
-			public void onSuccess(JSONObject json){
-				aTweets.insert(Tweet.fromJSON(json), 0);	
-				lvTweets.setSelection(0);				
+					profileUser = User.fromJSON(json);
 			}
 
 			public void onFailure(Throwable e, String s){

@@ -7,6 +7,7 @@ import android.content.Context;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 /*
@@ -58,7 +59,33 @@ public class TwitterClient extends OAuthBaseClient {
 		params.put("status", body);
 		client.post(apiUrl, params, handler);
 	}
-	
+
+	public void getMentionsTimeline(String max_id,
+      JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/mentions_timeline.json");
+		RequestParams params = new RequestParams();
+		params.put("count", COUNT);
+		if (max_id.equals("0"))
+			params.put("since_id", "1");
+		else
+		  params.put("max_id", max_id);
+		client.get(apiUrl, params, handler);
+
+	  
+  }
+
+	public void getProfileTimeline(String max_id,
+      JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/user_timeline.json");
+		RequestParams params = new RequestParams();
+		params.put("count", COUNT);
+		if (max_id.equals("0"))
+			params.put("since_id", "1");
+		else
+		  params.put("max_id", max_id);
+		client.get(apiUrl, params, handler);
+
+  }	
 		
 	// CHANGE THIS
 	// DEFINE METHODS for different API endpoints here
