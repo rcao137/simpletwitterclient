@@ -1,9 +1,5 @@
 package com.codepath.apps.basictwitter.models;
 
-import java.io.Serializable;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class User implements Serializable{
 

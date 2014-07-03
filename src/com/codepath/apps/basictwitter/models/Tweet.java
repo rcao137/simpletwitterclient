@@ -1,13 +1,6 @@
 package com.codepath.apps.basictwitter.models;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.codepath.apps.basictwitter.ParseRelativeDate;
+import com.codepath.apps.basictwitter.util.ParseRelativeDate;
 
 public class Tweet implements Serializable {
 

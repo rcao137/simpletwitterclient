@@ -1,10 +1,5 @@
-package com.codepath.apps.basictwitter;
+package com.codepath.apps.basictwitter.util;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
-import android.text.format.DateUtils;
 
 public class ParseRelativeDate {
 	//getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");

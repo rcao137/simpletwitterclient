@@ -1,19 +1,8 @@
 package com.codepath.apps.basictwitter.fragments;
 
-import java.util.ArrayList;
-
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-
 import com.codepath.apps.basictwitter.R;
 import com.codepath.apps.basictwitter.TweetArrayAdapter;
 import com.codepath.apps.basictwitter.models.Tweet;
-
-import eu.erikw.PullToRefreshListView;
 
 public class TweetsListFragment extends Fragment {
 	protected ArrayList<Tweet> tweets;

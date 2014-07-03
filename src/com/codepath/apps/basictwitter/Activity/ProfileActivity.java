@@ -1,12 +1,8 @@
-package com.codepath.apps.basictwitter;
+package com.codepath.apps.basictwitter.Activity;
 
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.widget.ImageView;
-import android.widget.TextView;
-
+import com.codepath.apps.basictwitter.R;
+import com.codepath.apps.basictwitter.fragments.UserprofileTimelineFragment;
 import com.codepath.apps.basictwitter.models.User;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ProfileActivity extends FragmentActivity {
 	private User user;
@@ -16,11 +12,12 @@ public class ProfileActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profile);
 		user = (User) getIntent().getSerializableExtra("user");
-		setTitle("@"+user.getScreenName());
-		populateUserInfo();
+		String screenName = user.getScreenName();
+		setTitle("@"+screenName);
+		populateUserInfo(screenName);
 	}
 
-	private void populateUserInfo() {
+	private void populateUserInfo(String screenName) {
 		ImageView ivProfileImage = (ImageView) findViewById(R.id.ivProfileImage);
 		ivProfileImage.setImageResource(android.R.color.transparent);
 		ImageLoader imageLoader = ImageLoader.getInstance();
@@ -34,6 +31,11 @@ public class ProfileActivity extends FragmentActivity {
 		tvFollower.setText(user.getfollowers()+" followers");	
 		TextView tvFollowing = (TextView) findViewById(R.id.tvFollowing);
 		tvFollowing.setText(user.getfollowing()+" following");	
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		UserprofileTimelineFragment profileFragment = UserprofileTimelineFragment.newInstance(screenName);
+		ft.replace(R.id.fragment_profile, profileFragment);
+		ft.commit();
   }
 	
 	

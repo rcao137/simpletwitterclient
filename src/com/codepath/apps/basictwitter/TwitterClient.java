@@ -10,6 +10,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+
 /*
  * 
  * This is the object responsible for communicating with a REST API. 
@@ -70,12 +71,10 @@ public class TwitterClient extends OAuthBaseClient {
 		else
 		  params.put("max_id", max_id);
 		client.get(apiUrl, params, handler);
-
-	  
   }
 
 	public void getProfileTimeline(String max_id,
-      JsonHttpResponseHandler handler) {
+      String screenName, JsonHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/user_timeline.json");
 		RequestParams params = new RequestParams();
 		params.put("count", COUNT);
@@ -83,6 +82,7 @@ public class TwitterClient extends OAuthBaseClient {
 			params.put("since_id", "1");
 		else
 		  params.put("max_id", max_id);
+		params.put("screen_name", screenName);
 		client.get(apiUrl, params, handler);
 
   }	

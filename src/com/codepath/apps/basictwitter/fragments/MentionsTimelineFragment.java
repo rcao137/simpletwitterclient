@@ -1,17 +1,9 @@
 package com.codepath.apps.basictwitter.fragments;
 
-import org.json.JSONArray;
-
-import android.os.Bundle;
-import android.util.Log;
-
 import com.codepath.apps.basictwitter.TwitterApp;
 import com.codepath.apps.basictwitter.TwitterClient;
 import com.codepath.apps.basictwitter.models.Tweet;
 import com.codepath.apps.basictwitter.util.EndlessScrollListener;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import eu.erikw.PullToRefreshListView.OnRefreshListener;
 
 public class MentionsTimelineFragment extends TweetsListFragment {
 	private TwitterClient client;

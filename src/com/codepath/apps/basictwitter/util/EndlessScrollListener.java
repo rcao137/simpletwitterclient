@@ -1,7 +1,5 @@
 package com.codepath.apps.basictwitter.util;
 
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 
 public abstract class EndlessScrollListener implements OnScrollListener {
 	// The minimum amount of items to have below your current scroll position

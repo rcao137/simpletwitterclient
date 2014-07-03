@@ -1,18 +1,8 @@
-package com.codepath.apps.basictwitter;
+package com.codepath.apps.basictwitter.Activity;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-
+import com.codepath.apps.basictwitter.R;
 import com.codepath.apps.basictwitter.models.Tweet;
 import com.codepath.apps.basictwitter.models.User;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class NewTweetActivity extends Activity {
 	private Tweet newTweet;

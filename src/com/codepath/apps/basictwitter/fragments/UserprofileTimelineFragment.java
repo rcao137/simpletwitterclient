@@ -1,28 +1,31 @@
 package com.codepath.apps.basictwitter.fragments;
 
-import org.json.JSONArray;
-
-import android.os.Bundle;
-import android.util.Log;
-
 import com.codepath.apps.basictwitter.TwitterApp;
 import com.codepath.apps.basictwitter.TwitterClient;
 import com.codepath.apps.basictwitter.models.Tweet;
 import com.codepath.apps.basictwitter.util.EndlessScrollListener;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import eu.erikw.PullToRefreshListView.OnRefreshListener;
 
 public class UserprofileTimelineFragment extends TweetsListFragment {
 	private TwitterClient client;
+	private String screenName;
 
+	public static UserprofileTimelineFragment newInstance(String scrName) {
+		UserprofileTimelineFragment profileFragment = new UserprofileTimelineFragment();
+    Bundle args = new Bundle();
+//    args.putInt("someInt", someInt);
+    args.putString("screen_name", scrName);
+    profileFragment.setArguments(args);
+    return profileFragment;
+}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		client = TwitterApp.getRestClient();
 
+		screenName = getArguments().getString("screen_name");
 		// Get initial tweets
-		profileTimeline("0", false);
+		profileTimeline("0", screenName, false);
 	}
 
 	@Override
@@ -46,7 +49,7 @@ public class UserprofileTimelineFragment extends TweetsListFragment {
 				// once the loading is done. This can be done from here or any
 				// place such as when the network request has completed successfully.
 				boolean refresh = true;
-				profileTimeline("0", refresh);
+				profileTimeline("0", screenName, refresh);
 
 			}
 		});
@@ -65,12 +68,12 @@ public class UserprofileTimelineFragment extends TweetsListFragment {
 			max_id = (String) tweets.get(tweetLen-1).getUid();
 			Long opt_max_id = Long.valueOf(max_id) -1;
 			max_id = opt_max_id.toString();
-			profileTimeline(max_id, false);
+			profileTimeline(max_id, screenName, false);
 		}
 	}
 
-	public void profileTimeline(final String max_id, final boolean refreshFlag){
-		client.getProfileTimeline(max_id, new JsonHttpResponseHandler() {
+	public void profileTimeline(final String max_id, final String screenName, final boolean refreshFlag){
+		client.getProfileTimeline(max_id, screenName, new JsonHttpResponseHandler() {
 			public void onSuccess(JSONArray json){
 				if (max_id.equals("0"))
 					aTweets.clear();
